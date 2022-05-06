@@ -9,14 +9,18 @@ section .data
 section .bss
 	n	resd 1     ; int n;
 	array	resd 100   ; int array[100];
+array_end:
 
 section .text
 my_main:
 ; --------------------------- ARRAY READING
 	lea	r13, [array]
+	lea	r14, [array_end]
 .read_arr:
+	cmp	r13, r14     ; check n >= 100
+	jge	.read_too_many
+
 	lea	rdi, [fmt_scan]
-	;lea	rsi, [array+0]
 	mov	rsi, r13
 	mov	rax, 0
 	call	scanf wrt ..plt
@@ -25,10 +29,22 @@ my_main:
 	add	r13, 4
 	cmp	rax, 1
 	jz	.read_arr
+.read_end:                ; If scanf failed... (returned 0 or -1)
+	lea	r14, [array+4]
+	cmp	r13, r14
+	jnz	.read_ok  ; ...and was called only once
+	xor	rax, rax  ; Exit with error 1
+	inc	rax
+	ret
+.read_too_many:
+	inc	dword [n]
+.read_ok:
 	dec	dword [n]
-	; TODO: check n > 100
+	;lea	r14, [array]
+	;sub	r13, r14
+	;shr	r13, 2
+	;int3
 
-.read_end:
 	mov	esi, dword [n]
 	lea	rdi, [fmt_debug]
 	mov	rax, 0
@@ -39,7 +55,32 @@ my_main:
 	call	print_n_ints
 
 ; --------------------------- BUBBLE SORT array[0..n]
-	nop ; TODO
+	mov	r12d, dword [n]  ; i = n
+.bubble_sort_loop:
+	mov	ecx, dword [n]   ; j = n-1
+	dec	ecx
+.inner:
+	lea	rsi, [array]
+	lea	rsi, [rsi + 4*rcx]
+	lea	rdi, [rsi-4]
+
+	mov	eax, dword [rsi] ; array[j]
+	mov	edx, dword [rdi] ; array[j-1]
+	cmp	eax, edx  ; a[j] < a[j-1]
+	jge .no_swap
+.swap:
+	mov	dword [rsi], edx
+	mov	dword [rdi], eax
+	;jmp	.after_swap
+.no_swap:
+.after_swap:
+	sub	rsi, 4
+	sub	rdi, 4
+	;
+	loop .inner              ; j -= 1
+	;
+	dec	r12
+	jnz	.bubble_sort_loop
 
 ; ---------------------------
 	mov	r12d, dword [n]  ; ecx + loop ??
