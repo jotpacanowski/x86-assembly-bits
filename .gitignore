@@ -3,3 +3,4 @@ a.out
 # Skip files without extension
 [^\.]*
 !*.asm
+!*.inc

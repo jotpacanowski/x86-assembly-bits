@@ -1,9 +1,4 @@
-bits    64
-default rel
-extern  printf
-extern  scanf
-global  main
-
+%include "_common.inc"
 ;extern stdin
 ;extern fgets
 
@@ -18,14 +13,7 @@ section .bss
 	output resb 1024
 
 section .text
-main:
-	push	rbp
-	mov	rbp, rsp
-	sub	rsp, 16
-	and	rsp, -16  ; align the stack (important)
-	push	rbp
-	push	rbp       ; still aligned to 16 bytes
-
+my_main:
 	;lea	rdi, [input]
 	;mov	rsi, 1023
 	;mov	rdx, [stdin]
@@ -58,8 +46,4 @@ main:
 	call	printf wrt ..plt
 
 	xor	rax, rax
-	;add	rsp, 16
-	pop	rsp  ; TOS-> unaligned rsp twice
-	pop	rsp
-	leave	; TOS-> old rbp
-	ret	; TOS-> old rip
+	ret

@@ -7,8 +7,10 @@ all: $(outputs)
 clean:
 	$(RM) $(objects) $(outputs)
 
+$(objects): %.o: _common.inc
+
 %.o: %.asm
-	nasm -f elf64 $^
+	nasm -f elf64 $<
 
 %: %.o
 	cc -o $@ $^

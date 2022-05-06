@@ -1,8 +1,4 @@
-bits    64
-default rel
-extern  printf
-extern  scanf
-global  main
+%include "_common.inc"
 
 section .data
 	prompt_float
@@ -16,15 +12,7 @@ section .bss
 	end	resq 1
 
 section .text
-main:
-	push	rbp
-	mov	rbp, rsp
-	sub	rsp, 16
-	and	rsp, -16  ; align the stack (important)
-	push	rbp
-	push	rbp       ; still aligned to 16 bytes
-
-; ---------------------------
+my_main:
 	lea	rdi, [prompt_float]
 	mov	al, 0
 	call	printf wrt ..plt
@@ -60,8 +48,4 @@ main:
 
 ; ---------------------------
 .end:
-	pop	rsp  ; TOS-> unaligned rsp twice
-	pop	rsp
-	xor	rax, rax
-	leave	; TOS-> old rbp
-	ret	; TOS-> old rip
+	ret

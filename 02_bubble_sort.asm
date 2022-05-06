@@ -1,8 +1,4 @@
-bits    64
-default rel
-extern  printf
-extern  scanf
-global  main
+%include "_common.inc"
 
 section .data
 	fmt_scan	db '%d', 0
@@ -15,14 +11,7 @@ section .bss
 	array	resd 100   ; int array[100];
 
 section .text
-main:
-	push	rbp
-	mov	rbp, rsp
-	sub	rsp, 16
-	and	rsp, -16  ; align the stack (important)
-	push	rbp
-	push	rbp       ; still aligned to 16 bytes
-
+my_main:
 ; --------------------------- ARRAY READING
 	lea	r13, [array]
 .read_arr:
@@ -56,12 +45,8 @@ main:
 	mov	r12d, dword [n]  ; ecx + loop ??
 	lea	r13, [array]
 	call	print_n_ints
-
-	pop	rsp  ; TOS-> unaligned rsp twice
-	pop	rsp
 	xor	rax, rax
-	leave	; TOS-> old rbp
-	ret	; TOS-> old rip
+	ret
 
 ; ---------------------------
 print_n_ints:
