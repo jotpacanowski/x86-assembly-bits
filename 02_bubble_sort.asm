@@ -40,10 +40,12 @@ my_main:
 	inc	dword [n]
 .read_ok:
 	dec	dword [n]
-	;lea	r14, [array]
-	;sub	r13, r14
-	;shr	r13, 2
+	lea	r14, [array]
+	sub	r13, r14
+	shr	r13, 2
 	;int3
+	cmp	r13, 2
+	jz	.end
 
 	mov	esi, dword [n]
 	lea	rdi, [fmt_debug]
@@ -83,6 +85,7 @@ my_main:
 	jnz	.bubble_sort_loop
 
 ; ---------------------------
+.end:
 	mov	r12d, dword [n]  ; ecx + loop ??
 	lea	r13, [array]
 	call	print_n_ints
