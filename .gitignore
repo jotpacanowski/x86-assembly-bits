@@ -1,0 +1,5 @@
+a.out
+*.o
+# Skip files without extension
+[^\.]*
+!*.asm
