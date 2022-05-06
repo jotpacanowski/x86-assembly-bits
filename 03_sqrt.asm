@@ -1,7 +1,7 @@
 %include "_common.inc"
 
 section .data
-	prompt_float
+	prompt_float:
 	db 'Enter a positive floating-point number: ', 0
 	fmt_scan	db '%lf', 0
 	fmt_print	db '%lf', 10, 0
@@ -21,6 +21,9 @@ my_main:
 	lea	rsi, [end]
 	mov	al, 0
 	call	scanf wrt ..plt
+
+	cmp	rax, 1
+	jnz	.end_err
 
 	movlpd	xmm0, [end]
 	lea	rdi, [fmt_debug]
@@ -44,8 +47,12 @@ my_main:
 
 	addsd	xmm5, xmm6
 	comisd	xmm5, xmm7
-	jbe	.main_loop   ; ?? jbe vs jle
+; COMISD sets CF if xmm5 < xmm7
+	jbe	.main_loop
 
 ; ---------------------------
+.end_err:
+	xor	rax, rax
+	inc	rax
 .end:
 	ret
