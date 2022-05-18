@@ -1,4 +1,8 @@
-%include "_common.inc"
+bits    64
+default rel
+global  main
+extern  printf
+extern  scanf
 ;extern stdin
 ;extern fgets
 
@@ -13,7 +17,8 @@ section .bss
 	output resb 1024
 
 section .text
-my_main:
+main:
+	sub	rsp, 8
 	;lea	rdi, [input]
 	;mov	rsi, 1023
 	;mov	rdx, [stdin]
@@ -46,4 +51,5 @@ my_main:
 	call	printf wrt ..plt
 
 	xor	rax, rax
+	add	rsp, 8
 	ret
