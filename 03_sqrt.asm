@@ -1,4 +1,8 @@
-%include "_common.inc"
+bits    64
+default rel
+global  main
+extern  printf
+extern  scanf
 
 section .data
 	prompt_float:
@@ -12,7 +16,8 @@ section .bss
 	end	resq 1
 
 section .text
-my_main:
+main:
+	sub	rsp, 8
 	lea	rdi, [prompt_float]
 	mov	al, 0
 	call	printf wrt ..plt
@@ -55,4 +60,5 @@ my_main:
 	xor	rax, rax
 	inc	rax
 .end:
+	add	rsp, 8
 	ret
