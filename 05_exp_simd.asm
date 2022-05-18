@@ -12,8 +12,6 @@ section .data
 	arg_k:		dd 0
 align 16  ; for aligned move instruction
 	arg_x:		dq 0.0
-align 16
-	const_one:	times 2 dq 1.0
 
 section .text
 main:
@@ -31,7 +29,14 @@ main:
 ; ---------------------------
 	mov	ecx, [arg_k]
 
-	movapd	xmm7, [const_one]
+; Using a trick from chapter 13.8 (table 13.10) of
+; https://www.agner.org/optimize/optimizing_assembly.pdf
+; double-precision 1.0 in hex is 3f f0 00 ... 00
+	pcmpeqw	xmm7, xmm7   ; all 1's
+	psllq	xmm7, 54     ; Set mantissa to zero
+	psrlq	xmm7, 2      ; Shift to set sign and exponent correctly
+	; xmm7 = {1.0, 1.0}
+
 	movdqa	xmm0, xmm7        ; result = 1
 	movdqa	xmm1, xmm7        ; numerator
 	movdqa	xmm2, xmm7        ; denominator
