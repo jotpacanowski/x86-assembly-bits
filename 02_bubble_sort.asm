@@ -1,4 +1,8 @@
-%include "_common.inc"
+bits    64
+default rel
+global  main
+extern  printf
+extern  scanf
 
 section .data
 	fmt_scan	db '%d', 0
@@ -12,7 +16,8 @@ section .bss
 array_end:
 
 section .text
-my_main:
+main:
+	sub	rsp, 8
 ; --------------------------- ARRAY READING
 	lea	r13, [array]
 	lea	r14, [array_end]
@@ -35,6 +40,7 @@ my_main:
 	jnz	.read_ok  ; ...and was called only once
 	xor	rax, rax  ; Exit with error 1
 	inc	rax
+	add	rsp, 8
 	ret
 .read_too_many:
 	inc	dword [n]
@@ -90,6 +96,7 @@ my_main:
 	lea	r13, [array]
 	call	print_n_ints
 	xor	rax, rax
+	add	rsp, 8
 	ret
 
 ; ---------------------------
