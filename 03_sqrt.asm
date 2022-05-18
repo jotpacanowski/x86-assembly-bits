@@ -55,6 +55,8 @@ main:
 ; COMISD sets CF if xmm5 < xmm7
 	jbe	.main_loop
 
+	xor	rax, rax
+	jmp	.end
 ; ---------------------------
 .end_err:
 	xor	rax, rax
