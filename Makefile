@@ -39,11 +39,20 @@ test-sqrt: ./03_sqrt
 	@echo -e "\x1b[42;37;1m   Testing square root \x1b[0m"
 	echo '1.0' | ./03_sqrt
 
-test-exp: ./04_exp
+test-exp4: ./04_exp
 	@echo -e "\x1b[42;37;1m   Testing e^x \x1b[0m"
 	@echo '0 11' | ./04_exp | grep '1.0'
 	@echo '1 20' | ./04_exp | grep '2.7182'
 	echo '2 20' | ./04_exp
+
+test-exp5: ./05_exp_simd
+	@echo -e "\x1b[42;37;1m   Testing e^x (SIMD version) \x1b[0m"
+	@echo 'This version computes both e^x and e^(x+1) at the same time.'
+	@echo '0 20' | ./05_exp_simd
+	@echo '2 20' | ./05_exp_simd
+	@echo '-1 20' | ./05_exp_simd
+
+test-exp: test-exp4 test-exp5
 
 tests: test-hello \
 	test-strcpy \
