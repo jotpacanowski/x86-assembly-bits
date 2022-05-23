@@ -67,6 +67,7 @@ main:
 .bubble_sort_loop:
 	mov	ecx, dword [n]   ; j = n-1
 	dec	ecx
+	xor	r15, r15   ; flag (zero if bubble sort never swapped)
 .inner:
 	lea	rsi, [array]
 	lea	rsi, [rsi + 4*rcx]
@@ -77,6 +78,8 @@ main:
 	cmp	eax, edx  ; a[j] < a[j-1]
 	jge .no_swap
 .swap:
+	;inc	r15
+	or	r15d, 1   ; set flag
 	mov	dword [rsi], edx
 	mov	dword [rdi], eax
 	;jmp	.after_swap
@@ -86,6 +89,8 @@ main:
 	sub	rdi, 4
 	;
 	loop .inner              ; j -= 1
+	test	r15, r15
+	jz	.end  ; break
 	;
 	dec	r12
 	jnz	.bubble_sort_loop
