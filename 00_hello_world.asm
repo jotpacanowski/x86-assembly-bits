@@ -46,6 +46,7 @@ main_int_echo:
 	mov	al, 0
 	call	scanf wrt ..plt
 
+	mov	rsi, [intarr+0]
 	lea	rdi, [fmt_int_lf]
 	mov	al, 0
 	call	printf wrt ..plt
